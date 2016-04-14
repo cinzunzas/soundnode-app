@@ -41,9 +41,10 @@ app.controller('QueueCtrl', function(
 
     $scope.activateTrackInQueue = function($event) {
         if ( $scope.data.length < 1 ) {
+            console.log("entre activateTrackInQueue IF= ",$scope.data);
             return;
         }
-
+        console.log("entre activateTrackInQueue ELSE= ",$scope.data);
         var trackId = queueService.getTrack().songId;
         var track = document.querySelector('.queueListView_list_item[data-song-id="' + trackId + '"]');
         var oldActive = document.querySelector('.queueListView_list_item.active');

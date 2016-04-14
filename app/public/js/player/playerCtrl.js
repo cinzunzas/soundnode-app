@@ -5,6 +5,7 @@ app.controller('PlayerCtrl', function (
     $rootScope,
     playerService,
     queueService,
+    utilsService,
     hotkeys,
     $state,
     $log,
@@ -83,6 +84,9 @@ app.controller('PlayerCtrl', function (
         var elButton = document.querySelector('.player_shuffle');
         elButton.classList.toggle('active');
         $rootScope.shuffle = !$rootScope.shuffle;
+        if( $rootScope.shuffle ){
+            utilsService.shuffle();
+        }
     };
 
     $scope.toggleQueue = function($event) {

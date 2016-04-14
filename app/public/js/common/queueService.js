@@ -87,6 +87,7 @@ app.factory('queueService', function() {
      * @return {Boolean} [false if list isn't empty and true for when list is empty]
      */
     Queue.isEmpty = function() {
+        console.log('largo de la lista=', this.size());
         return this.size() < 1;
     };
 
@@ -146,9 +147,11 @@ app.factory('queueService', function() {
         if ( this.isEmpty() ) {
             return false;
         }
-
+        console.log(this.list.length);
         for ( var i = 0; i < this.list.length; i++ ) {
             if ( this.list[i].songId === id ) {
+                console.log("songid= ", this.list[i].songId);
+                console.log("i = ", i);
                 return i;
             }
         }

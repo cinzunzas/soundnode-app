@@ -51,6 +51,7 @@ app.factory('utilsService', function(
      * @param trackId [contain track id]
      */
     Utils.activateCurrentSong = function(trackId) {
+        console.log('utilsService activateCurrentSong = ', trackId);
         var el = document.querySelector('span[data-song-id="' + trackId + '"]');
 
         if ( el ) {
@@ -64,7 +65,7 @@ app.factory('utilsService', function(
      */
     Utils.deactivateCurrentSong = function() {
         var currentSong = this.getCurrentSong();
-
+        console.log('utilsService deactivateCurrentSong=', currentSong);
         if ( currentSong ) {
             currentSong.classList.remove('currentSong');
         }
@@ -84,10 +85,18 @@ app.factory('utilsService', function(
      * @returns {number} [index in array]
      */
     Utils.shuffle = function() {
-        var max = queueService.size() - 1;
-        var min = 0;
+        var $track = this.getCurrentSong();
 
-        queueService.currentPosition = Math.floor(Math.random() * (max - min) + min);
+        var array = queueService.list;
+        var count = array.length, randomnumber, temp;
+        while( count ){
+            randomnumber = Math.random() * count-- | 0;
+            temp = array[count];
+            array[count] = array[randomnumber];
+            array[randomnumber] = temp
+        }
+        this.setCurrentBySongId($track);
+        queueService.list = array;
     };
 
     /**
@@ -189,6 +198,8 @@ app.factory('utilsService', function(
      * @returns {boolean}
      */
     Utils.isLastTrackInQueue = function() {
+        console.log('currentPosition utilsService=', queueService.currentPosition);
+        console.log('size utilsService= ', queueService.size() - 1);
         return queueService.currentPosition === queueService.size() - 1;
     };
 
@@ -228,9 +239,19 @@ app.factory('utilsService', function(
      */
     Utils.setCurrent = function() {
         var $track = queueService.getTrack();
-
+        console.log('CurrentSong utilsService=', $track);
         if ( $track !== null && $track != undefined ) {
             $timeout(function() {
+                $('#' + $track.songId).addClass('currentSong');
+            }, 1500);
+        }
+
+    };
+    Utils.setCurrentBySongId = function($track) {
+        console.log('CurrentSong utilsService =', $track.id);
+        if ( $track !== null && $track != undefined ) {
+            $timeout(function() {
+                this.deactivateCurrentSong();
                 $('#' + $track.songId).addClass('currentSong');
             }, 1500);
         }

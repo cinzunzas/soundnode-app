@@ -90,15 +90,22 @@ app.factory('playerService', function(
      * @method songClicked
      */
     player.songClicked = function(clickedSong) {
+        console.log("Si, este hizo click");
         var currentElSiblings;
         var trackPosition;
         var currentElData = $(clickedSong).data();
 
-        if ( $rootScope.oldView !== '' &&
-            $rootScope.currentView !== $rootScope.oldView &&
-            ! queueService.find(currentElData.songId) &&
-            ! queueService.isEmpty()
-        ) {
+        if ( $rootScope.oldView !== ''
+            && $rootScope.currentView !== $rootScope.oldView
+            && queueService.find(currentElData.songId) === false
+            && !queueService.isEmpty()
+            )
+        {
+            console.log('find= ', !queueService.find(currentElData.songId));
+            console.log('isEmpty=   ', !queueService.isEmpty());
+            console.log('find2= ', queueService.find(currentElData.songId));
+            console.log('isEmpty2= ', queueService.isEmpty());
+            console.log("entre al clear", clickedSong);
             queueService.clear();
         }
 
@@ -108,17 +115,22 @@ app.factory('playerService', function(
             this.playSong();
         } else if ( this.elPlayer.currentTime === 0 && this.elPlayer.paused || clickedSong !== utilsService.getCurrentSong() ) { // there's no song playing or song clicked not equal to current song paying
 
-            if ( queueService.isEmpty() || utilsService.isLastTrackInQueue() ) {
+            if ( queueService.isEmpty() || utilsService.isLastTrackInQueue() && queueService.size() === 0) {
+                console.log('isLastTrackInQueue= ', utilsService.isLastTrackInQueue());
+                console.log('isEmpty=   ', !queueService.isEmpty());
+                console.log("playService 1");
                 currentElSiblings = utilsService.getSongSiblingsData(clickedSong);
                 queueService.insert(currentElData);
                 queueService.push(currentElSiblings);
             } else {
-
+                console.log("playService 2");
                 // find track in the Queue
                 trackPosition = queueService.find(currentElData.songId);
                 if ( trackPosition === 0 || trackPosition > 0 ) {
                     queueService.currentPosition = trackPosition;
+                    console.log("playService 22");
                 } else {
+                    console.log("playService 23");
                     queueService.insert(currentElData);
                     queueService.next();
                 }
@@ -223,9 +235,7 @@ app.factory('playerService', function(
             player.elPlayer.currentTime = 0;
             return false;
         }
-        if ( $rootScope.shuffle && ! $rootScope.repeat ) {
-            utilsService.shuffle();
-        } else if ( ! $rootScope.repeat ) {
+        if ( ! $rootScope.repeat ) {
             queueService.prev();
         }
 
@@ -244,12 +254,14 @@ app.factory('playerService', function(
             return false;
         }
 
-        if ( $rootScope.shuffle && !$rootScope.repeat ) {
-            utilsService.shuffle();
-        } else if ( !$rootScope.repeat && utilsService.isLastTrackInQueue() ) {
-            utilsService.scrollToBottom();
-            utilsService.addLoadedTracks();
-        } else if ( !$rootScope.repeat && !utilsService.isLastTrackInQueue() ) {
+        if ( !$rootScope.repeat ) {
+            if ( utilsService.isLastTrackInQueue() ) {
+                utilsService.scrollToBottom();
+                utilsService.addLoadedTracks();
+            }
+            /*if ( $rootScope.shuffle ) {
+                utilsService.shuffle();
+            }*/
             queueService.next();
         }
 
