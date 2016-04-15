@@ -40,15 +40,35 @@ app.controller('QueueCtrl', function(
     }, 1000);
 
     $scope.activateTrackInQueue = function($event) {
+        console.log("VOY A ACTIVAR LA CANCION DE LA COLA=", $scope.data);
         if ( $scope.data.length < 1 ) {
-            console.log("entre activateTrackInQueue IF= ",$scope.data);
             return;
         }
-        console.log("entre activateTrackInQueue ELSE= ",$scope.data);
+
         var trackId = queueService.getTrack().songId;
         var track = document.querySelector('.queueListView_list_item[data-song-id="' + trackId + '"]');
         var oldActive = document.querySelector('.queueListView_list_item.active');
+        var trackShuffle = utilsService.getCurrentSong();
 
+
+        if ( trackShuffle && oldActive ){
+            var trackIdShuffleControl = trackShuffle.getAttribute('data-song-id');
+            var oldActiveShuffleControl = oldActive.getAttribute('data-song-id');
+            console.log("weaDeCesar=", trackIdShuffleControl);
+            console.log('oldAactiveSC=',oldActiveShuffleControl)
+
+            if ( trackIdShuffleControl != trackId ){
+                console.log(track);
+                var trackControl = document.querySelector('.queueListView_list_item[data-song-id="' + trackIdShuffleControl + '"]');
+                track.classList.remove('active');
+                trackControl.classList.add('active');
+                console.log(track);
+                return;
+            }
+        }
+
+        console.log('trackID=', trackId);
+;
         if ( oldActive ) {
             oldActive.classList.remove('active');
         }

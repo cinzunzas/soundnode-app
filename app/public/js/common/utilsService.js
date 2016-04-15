@@ -251,7 +251,6 @@ app.factory('utilsService', function(
         console.log('CurrentSong utilsService =', $track.id);
         if ( $track !== null && $track != undefined ) {
             $timeout(function() {
-                this.deactivateCurrentSong();
                 $('#' + $track.songId).addClass('currentSong');
             }, 1500);
         }
