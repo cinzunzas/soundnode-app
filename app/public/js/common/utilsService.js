@@ -85,9 +85,14 @@ app.factory('utilsService', function(
      * @returns {number} [index in array]
      */
     Utils.shuffle = function() {
-        var $track = this.getCurrentSong();
+        var track = queueService.getTrack();
+        var trackPosition = queueService.find(track.songId);
 
         var array = queueService.list;
+        var original = [];
+        original[0] = array[trackPosition];
+        array.splice(trackPosition, 1);
+        console.log("original[]0=", original);
         var count = array.length, randomnumber, temp;
         while( count ){
             randomnumber = Math.random() * count-- | 0;
@@ -95,7 +100,9 @@ app.factory('utilsService', function(
             array[count] = array[randomnumber];
             array[randomnumber] = temp
         }
-        this.setCurrentBySongId($track);
+        //this.setCurrentBySongId($track);
+        array.unshift(original[0]);
+        console.log("ArrayShuffle=", array);
         queueService.list = array;
     };
 
